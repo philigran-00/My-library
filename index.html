@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookmory Vintage Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="desighn.css" />
+</head>
+<body class="dark-theme">
+  <div class="lace-border-top"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header__brand">
+        <h1 class="header__title" id="pageTitle">Library</h1>
+        <p class="header__subtitle">Bookmory Edition</p>
+      </div>
+      <div class="header__actions">
+        <input type="text" id="searchInput" placeholder="Search book, author..." class="header__search-input" />
+        <button id="addBookBtn" class="btn btn--primary">+ Add Book</button>
+      </div>
+    </header>
+
+    <!-- Tab 1: CALENDAR -->
+    <section id="tab-calendar" class="tab-content hidden">
+      <div class="lace-card calendar-wrapper">
+        <div class="calendar-header">
+          <button id="prevMonthBtn" class="btn-icon">&lt;</button>
+          <h2 id="currentMonthYear" class="calendar-title">September 2026</h2>
+          <button id="nextMonthBtn" class="btn-icon">&gt;</button>
+        </div>
+        <div class="calendar-grid-header">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+        <div id="calendarDays" class="calendar-grid"></div>
+      </div>
+    </section>
+
+    <!-- Tab 2: LIBRARY -->
+    <section id="tab-library" class="tab-content active">
+      <div class="controls-section">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All</button>
+          <button class="filter-tab" data-filter="reading">Reading</button>
+          <button class="filter-tab" data-filter="planned">To Read</button>
+          <button class="filter-tab" data-filter="read">Completed</button>
+        </div>
+        <select id="sortSelect" class="sort-select custom-input">
+          <option value="title">By Title</option>
+          <option value="author">By Author</option>
+          <option value="progress">By Progress</option>
+        </select>
+      </div>
+      <main id="booksGrid" class="books-grid"></main>
+    </section>
+
+    <!-- Tab 3: SERIES -->
+    <section id="tab-series" class="tab-content hidden">
+      <div class="series-controls">
+        <input type="text" id="newSeriesInput" placeholder="New series name..." class="custom-input" />
+        <button id="addSeriesBtn" class="btn btn--primary">+ Create Series</button>
+      </div>
+      <div id="seriesGrid" class="series-grid"></div>
+    </section>
+
+    <!-- Tab 4: STATS -->
+    <section id="tab-stats" class="tab-content hidden">
+      <div class="stats-grid">
+        <div class="stat-card lace-card">
+          <span class="stat-card__label">TOTAL BOOKS</span>
+          <span id="statTotal" class="stat-card__value">0</span>
+        </div>
+        <div class="stat-card lace-card">
+          <span class="stat-card__label">IN PROGRESS</span>
+          <span id="statReading" class="stat-card__value">0</span>
+        </div>
+        <div class="stat-card lace-card">
+          <span class="stat-card__label">COMPLETED</span>
+          <span id="statRead" class="stat-card__value">0</span>
+        </div>
+        <div class="stat-card lace-card">
+          <span class="stat-card__label">PAGES READ</span>
+          <span id="statPages" class="stat-card__value">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5: PROFILE & SETTINGS -->
+    <section id="tab-profile" class="tab-content hidden">
+      <div class="profile-container lace-card">
+        <div class="profile-header">
+          <div class="avatar-wrapper">
+            <img id="profileAvatar" src="https://via.placeholder.com/120" alt="Avatar" />
+            <label for="avatarUpload" class="avatar-upload-btn">📷</label>
+            <input type="file" id="avatarUpload" accept="image/*" class="hidden" />
+          </div>
+          <div class="profile-info">
+            <h2 id="profileNameDisplay">User</h2>
+            <p id="profileBioDisplay">Book lover & Bookmory aesthetic</p>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="profile-settings">
+          <h3>Profile Settings</h3>
+          <div class="form-group">
+            <label for="profileNameInput">Your Name</label>
+            <input type="text" id="profileNameInput" class="custom-input" value="User" />
+          </div>
+
+          <div class="form-group">
+            <label>Theme</label>
+            <div class="theme-toggle-group">
+              <button id="darkThemeBtn" class="btn btn--secondary active-theme">🌙 Dark</button>
+              <button id="lightThemeBtn" class="btn btn--secondary">☀️ Light</button>
+            </div>
+          </div>
+
+          <button id="saveProfileBtn" class="btn btn--primary" style="width: 100%; margin-top: 1rem;">Save Changes</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-tab="calendar">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">Calendar</span>
+    </button>
+    <button class="nav-item active" data-tab="library">
+      <span class="nav-icon">📚</span>
+      <span class="nav-label">Library</span>
+    </button>
+    <button class="nav-item" data-tab="series">
+      <span class="nav-icon">🔖</span>
+      <span class="nav-label">Series</span>
+    </button>
+    <button class="nav-item" data-tab="stats">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Stats</span>
+    </button>
+    <button class="nav-item" data-tab="profile">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Profile</span>
+    </button>
+  </nav>
+
+  <!-- Add Book Modal -->
+  <div id="bookModal" class="modal-overlay hidden">
+    <div class="modal lace-card">
+      <div class="modal__header">
+        <h2 id="modalTitle">Add Book</h2>
+        <button id="closeModalBtn" class="modal__close-btn">&times;</button>
+      </div>
+      <form id="addBookForm">
+        <input type="hidden" id="bookId" />
+        <div class="form-group">
+          <label for="bookTitle">Book Title *</label>
+          <input type="text" id="bookTitle" required placeholder="The Picture of Dorian Gray" class="custom-input" />
+        </div>
+        <div class="form-group">
+          <label for="bookAuthor">Author *</label>
+          <input type="text" id="bookAuthor" required placeholder="Oscar Wilde" class="custom-input" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bookStatus">Status</label>
+            <select id="bookStatus" class="custom-input">
+              <option value="reading">Reading</option>
+              <option value="planned">To Read</option>
+              <option value="read">Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bookSeriesSelect">Series</label>
+            <select id="bookSeriesSelect" class="custom-input">
+              <option value="">No Series</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="totalPages">Total Pages *</label>
+            <input type="number" id="totalPages" min="1" required placeholder="320" class="custom-input" />
+          </div>
+          <div class="form-group">
+            <label for="readPages">Pages Read</label>
+            <input type="number" id="readPages" min="0" value="0" class="custom-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="bookCoverFile">Book Cover</label>
+          <input type="file" id="bookCoverFile" accept="image/*" class="file-input" />
+        </div>
+        <div class="modal__actions">
+          <button type="button" id="cancelModalBtn" class="btn btn--secondary">Cancel</button>
+          <button type="submit" class="btn btn--primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="click.js"></script>
+</body>
+</html>
