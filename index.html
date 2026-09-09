@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bookmory Vintage Edition</title>
+  <title>Vintage Library</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,11 +13,11 @@
   <div class="lace-border-top"></div>
 
   <div class="app-container">
-    <!-- Header -->
+    
     <header class="header">
       <div class="header__brand">
-        <h1 class="header__title" id="pageTitle">Library</h1>
-        <p class="header__subtitle">Bookmory Edition</p>
+        <h1 class="header__title" id="pageTitle">My shelves</h1>
+        <p class="header__subtitle">Vintage Edition</p>
       </div>
       <div class="header__actions">
         <input type="text" id="searchInput" placeholder="Search book, author..." class="header__search-input" />
@@ -25,7 +25,7 @@
       </div>
     </header>
 
-    <!-- Tab 1: CALENDAR -->
+    
     <section id="tab-calendar" class="tab-content hidden">
       <div class="lace-card calendar-wrapper">
         <div class="calendar-header">
@@ -40,7 +40,7 @@
       </div>
     </section>
 
-    <!-- Tab 2: LIBRARY -->
+    
     <section id="tab-library" class="tab-content active">
       <div class="controls-section">
         <div class="filter-tabs">
@@ -58,7 +58,7 @@
       <main id="booksGrid" class="books-grid"></main>
     </section>
 
-    <!-- Tab 3: SERIES -->
+    
     <section id="tab-series" class="tab-content hidden">
       <div class="series-controls">
         <input type="text" id="newSeriesInput" placeholder="New series name..." class="custom-input" />
@@ -67,7 +67,7 @@
       <div id="seriesGrid" class="series-grid"></div>
     </section>
 
-    <!-- Tab 4: STATS -->
+    
     <section id="tab-stats" class="tab-content hidden">
       <div class="stats-grid">
         <div class="stat-card lace-card">
@@ -89,18 +89,18 @@
       </div>
     </section>
 
-    <!-- Tab 5: PROFILE & SETTINGS -->
+    
     <section id="tab-profile" class="tab-content hidden">
       <div class="profile-container lace-card">
         <div class="profile-header">
           <div class="avatar-wrapper">
-            <img id="profileAvatar" src="https://via.placeholder.com/120" alt="Avatar" />
+            <img id="profileAvatar" src="https://ui-avatars.com/api/?name=Mahinbonu&background=2a2a2a&color=fff&size=120" alt="Avatar" />
             <label for="avatarUpload" class="avatar-upload-btn">📷</label>
             <input type="file" id="avatarUpload" accept="image/*" class="hidden" />
           </div>
           <div class="profile-info">
             <h2 id="profileNameDisplay">User</h2>
-            <p id="profileBioDisplay">Book lover & Bookmory aesthetic</p>
+            <p id="profileBioDisplay">Book lover & aesthetic lover</p>
           </div>
         </div>
 
@@ -127,7 +127,7 @@
     </section>
   </div>
 
-  <!-- Bottom Navigation -->
+ 
   <nav class="bottom-nav">
     <button class="nav-item" data-tab="calendar">
       <span class="nav-icon">📅</span>
@@ -151,60 +151,127 @@
     </button>
   </nav>
 
-  <!-- Add Book Modal -->
-  <div id="bookModal" class="modal-overlay hidden">
-    <div class="modal lace-card">
-      <div class="modal__header">
-        <h2 id="modalTitle">Add Book</h2>
-        <button id="closeModalBtn" class="modal__close-btn">&times;</button>
-      </div>
-      <form id="addBookForm">
-        <input type="hidden" id="bookId" />
-        <div class="form-group">
-          <label for="bookTitle">Book Title *</label>
-          <input type="text" id="bookTitle" required placeholder="The Picture of Dorian Gray" class="custom-input" />
-        </div>
-        <div class="form-group">
-          <label for="bookAuthor">Author *</label>
-          <input type="text" id="bookAuthor" required placeholder="Oscar Wilde" class="custom-input" />
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="bookStatus">Status</label>
-            <select id="bookStatus" class="custom-input">
-              <option value="reading">Reading</option>
-              <option value="planned">To Read</option>
-              <option value="read">Completed</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="bookSeriesSelect">Series</label>
-            <select id="bookSeriesSelect" class="custom-input">
-              <option value="">No Series</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="totalPages">Total Pages *</label>
-            <input type="number" id="totalPages" min="1" required placeholder="320" class="custom-input" />
-          </div>
-          <div class="form-group">
-            <label for="readPages">Pages Read</label>
-            <input type="number" id="readPages" min="0" value="0" class="custom-input" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="bookCoverFile">Book Cover</label>
-          <input type="file" id="bookCoverFile" accept="image/*" class="file-input" />
-        </div>
-        <div class="modal__actions">
-          <button type="button" id="cancelModalBtn" class="btn btn--secondary">Cancel</button>
-          <button type="submit" class="btn btn--primary">Save</button>
-        </div>
-      </form>
+  
+ <div id="bookModal" class="modal-overlay hidden">
+  <div class="modal lace-card">
+    <div class="modal__header">
+      <h2>Add Book</h2>
+      <button type="button" class="modal__close-btn" id="closeModalBtn">&times;</button>
     </div>
+
+    <form id="addBookForm">
+      
+      <div class="form-group text-center">
+        <label>Book Cover</label>
+        <input type="file" id="bookCoverInput" accept="image/*" class="file-input" />
+      </div>
+
+      
+      <div class="form-group">
+        <label for="bookTitle">Title *</label>
+        <input type="text" id="bookTitle" class="custom-input" placeholder="Add..." required />
+      </div>
+
+     
+      <div class="form-group">
+        <label for="bookAuthor">Author *</label>
+        <input type="text" id="bookAuthor" class="custom-input" placeholder="Add..." required />
+      </div>
+
+      
+      <div class="form-group">
+        <label>Format</label>
+        <div class="format-options">
+          <label class="format-btn">
+            <input type="radio" name="format" value="eBook" checked />
+            <span>📱 eBook</span>
+          </label>
+          <label class="format-btn">
+            <input type="radio" name="format" value="Audiobook" />
+            <span>🎧 Audiobook</span>
+          </label>
+          <label class="format-btn">
+            <input type="radio" name="format" value="Print" />
+            <span>📖 Print</span>
+          </label>
+        </div>
+      </div>
+
+      
+      <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input type="date" id="startDate" class="custom-input" />
+      </div>
+
+      
+      <div class="form-group">
+        <label for="finishDate">Finish Date</label>
+        <input type="date" id="finishDate" class="custom-input" />
+      </div>
+
+      
+      <div class="form-group">
+        <label for="bookStatus">Bookshelf</label>
+        <select id="bookStatus" class="custom-input">
+          <option value="Want to read">Want to read</option>
+          <option value="Reading">Reading</option>
+          <option value="Read">Read</option>
+        </select>
+      </div>
+
+      
+      <div class="form-group">
+        <label for="bookDescription">Description</label>
+        <textarea id="bookDescription" class="custom-input textarea-input" rows="3" placeholder="Add..."></textarea>
+      </div>
+
+      
+      <!-- Genre -->
+      <div class="form-group">
+        <label for="bookGenreSelect">Genre *</label>
+        <select id="bookGenreSelect" class="custom-input" required>
+          <option value="Fiction">Fiction</option>
+          <option value="Romance">Romance</option>
+          <option value="Fantasy">Fantasy</option>
+          <option value="Classics">Classics</option>
+          <option value="Non-Fiction">Non-Fiction</option>
+          <option value="custom">+ Custom Genre</option>
+        </select>
+
+        <!-- Поле для ввода своего жанра -->
+        <input 
+          type="text" 
+          id="customGenreInput" 
+          class="custom-input hidden" 
+          placeholder="Enter custom genre..." 
+          style="margin-top: 0.5rem;" 
+        />
+      </div>
+
+      
+      <div class="form-group">
+        <label for="bookPublisher">Publisher</label>
+        <input type="text" id="bookPublisher" class="custom-input" placeholder="Add..." />
+      </div>
+
+      
+      <div class="form-group">
+        <label for="publicationYear">Publication Year</label>
+        <input type="number" id="publicationYear" class="custom-input" placeholder="Add..." />
+      </div>
+
+      
+      <div class="form-group">
+        <label for="totalPages">Page Count</label>
+        <input type="number" id="totalPages" class="custom-input" placeholder="Add..." />
+      </div>
+
+      <div class="modal__actions">
+        <button type="submit" class="btn btn--primary btn--full">Save</button>
+      </div>
+    </form>
   </div>
+</div>
 
   <script type="module" src="click.js"></script>
 </body>

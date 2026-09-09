@@ -2,7 +2,7 @@ let books = JSON.parse(localStorage.getItem('bm_books')) || [];
 let seriesList = JSON.parse(localStorage.getItem('bm_series')) || ['Classics', 'Fantasy'];
 let profile = JSON.parse(localStorage.getItem('bm_profile')) || {
   name: 'Mahinbonu',
-  avatar: 'https://via.placeholder.com/120',
+  avatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="100%" height="100%" fill="%232d2d2d"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" fill="%23ffffff" font-size="40" font-family="sans-serif">M</text></svg>',
   theme: 'dark'
 };
 
@@ -25,6 +25,8 @@ const cancelModalBtn = document.getElementById('cancelModalBtn');
 const addBookForm = document.getElementById('addBookForm');
 const bookCoverFile = document.getElementById('bookCoverFile');
 const bookSeriesSelect = document.getElementById('bookSeriesSelect');
+const genreSelect = document.getElementById('bookGenreSelect');
+const customGenreInput = document.getElementById('customGenreInput');
 
 // Profile Elements
 const profileNameInput = document.getElementById('profileNameInput');
@@ -223,21 +225,89 @@ document.getElementById('addSeriesBtn')?.addEventListener('click', () => {
   }
 });
 
-// Modal Actions
-addBookBtn?.addEventListener('click', () => {
-  addBookForm.reset();
-  renderSeries();
-  bookModal.classList.remove('hidden');
+
+// Обработчик переключения пользовательского жанра
+genreSelect?.addEventListener('change', (e) => {
+  if (e.target.value === 'custom') {
+    customGenreInput?.classList.remove('hidden');
+    customGenreInput?.focus();
+  } else {
+    customGenreInput?.classList.add('hidden');
+    if (customGenreInput) customGenreInput.value = '';
+  }
 });
 
+
+// Modal Actions
+function openAddModal() {
+  addBookForm.reset();
+  
+  // Сбрасываем и скрываем инпут своего жанра
+  if (customGenreInput) {
+    customGenreInput.classList.add('hidden');
+    customGenreInput.value = '';
+  }
+
+  // Сбрасываем скрытый ID
+  const bookIdInput = document.getElementById('bookId');
+  if (bookIdInput) bookIdInput.value = '';
+
+  // Устанавливаем формат по умолчанию (eBook)
+  const defaultFormat = document.querySelector('input[name="format"][value="eBook"]');
+  if (defaultFormat) defaultFormat.checked = true;
+
+  bookModal.classList.remove('hidden');
+}
+
+function editBook(id) {
+  const book = books.find(b => b.id === id);
+  if (!book) return;
+
+  const bookIdInput = document.getElementById('bookId');
+  if (bookIdInput) bookIdInput.value = book.id;
+
+  document.getElementById('bookTitle').value = book.title || '';
+  document.getElementById('bookAuthor').value = book.author || '';
+  
+  const startDateInput = document.getElementById('startDate');
+  if (startDateInput) startDateInput.value = book.startDate || '';
+
+  const finishDateInput = document.getElementById('finishDate');
+  if (finishDateInput) finishDateInput.value = book.finishDate || '';
+
+  document.getElementById('bookStatus').value = book.status || 'planned';
+
+  const descInput = document.getElementById('bookDescription');
+  if (descInput) descInput.value = book.description || '';
+
+  const genreInput = document.getElementById('bookGenreSelect');
+  if (genreInput) genreInput.value = book.genre || 'Fiction';
+
+  const pubInput = document.getElementById('bookPublisher');
+  if (pubInput) pubInput.value = book.publisher || '';
+
+  const yearInput = document.getElementById('publicationYear');
+  if (yearInput) yearInput.value = book.publicationYear || '';
+
+  document.getElementById('totalPages').value = book.totalPages || '';
+
+  // Переключатель формата
+  const formatRadio = document.querySelector(`input[name="format"][value="${book.format}"]`);
+  if (formatRadio) formatRadio.checked = true;
+
+  bookModal.classList.remove('hidden');
+}
+
+addBookBtn?.addEventListener('click', openAddModal);
 closeModalBtn?.addEventListener('click', () => bookModal.classList.add('hidden'));
 cancelModalBtn?.addEventListener('click', () => bookModal.classList.add('hidden'));
+
 
 addBookForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   let cover = null;
 
-  if (bookCoverFile.files && bookCoverFile.files[0]) {
+  if (bookCoverFile?.files && bookCoverFile.files[0]) {
     cover = await new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (evt) => resolve(evt.target.result);
@@ -245,20 +315,35 @@ addBookForm?.addEventListener('submit', async (e) => {
     });
   }
 
+  const selectedFormat = document.querySelector('input[name="format"]:checked')?.value || 'eBook';
+
+  // Определяем итоговый жанр
+  let selectedGenre = genreSelect?.value || 'Fiction';
+  if (selectedGenre === 'custom') {
+    selectedGenre = customGenreInput?.value.trim() || 'Other';
+  }
+
   const newBook = {
     id: Date.now().toString(),
     title: document.getElementById('bookTitle').value.trim(),
     author: document.getElementById('bookAuthor').value.trim(),
+    format: selectedFormat,
+    startDate: document.getElementById('startDate')?.value || '',
+    finishDate: document.getElementById('finishDate')?.value || '',
     status: document.getElementById('bookStatus').value,
-    series: bookSeriesSelect.value,
+    description: document.getElementById('bookDescription')?.value.trim() || '',
+    genre: selectedGenre,
+    publisher: document.getElementById('bookPublisher')?.value.trim() || '',
+    publicationYear: document.getElementById('publicationYear')?.value || '',
     totalPages: Number(document.getElementById('totalPages').value) || 0,
-    readPages: Number(document.getElementById('readPages').value) || 0,
+    readPages: 0,
     cover
   };
 
   books.push(newBook);
   saveData();
   renderBooks();
+  addBookForm.reset();
   bookModal.classList.add('hidden');
 });
 
