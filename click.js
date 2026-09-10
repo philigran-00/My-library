@@ -9,7 +9,7 @@ let profile = JSON.parse(localStorage.getItem('bm_profile')) || {
 let currentFilter = 'all';
 let searchQuery = '';
 
-// DOM Elements
+
 const booksGrid = document.getElementById('booksGrid');
 const searchInput = document.getElementById('searchInput');
 const filterTabs = document.querySelectorAll('.filter-tab');
@@ -17,18 +17,18 @@ const navItems = document.querySelectorAll('.nav-item');
 const tabContents = document.querySelectorAll('.tab-content');
 const pageTitle = document.getElementById('pageTitle');
 
-// Modal Elements
+
 const addBookBtn = document.getElementById('addBookBtn');
 const bookModal = document.getElementById('bookModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const cancelModalBtn = document.getElementById('cancelModalBtn');
 const addBookForm = document.getElementById('addBookForm');
-const bookCoverFile = document.getElementById('bookCoverFile');
+const bookCoverInput = document.getElementById('bookCoverInput');
 const bookSeriesSelect = document.getElementById('bookSeriesSelect');
 const genreSelect = document.getElementById('bookGenreSelect');
 const customGenreInput = document.getElementById('customGenreInput');
 
-// Profile Elements
+
 const profileNameInput = document.getElementById('profileNameInput');
 const profileNameDisplay = document.getElementById('profileNameDisplay');
 const profileAvatar = document.getElementById('profileAvatar');
@@ -166,7 +166,7 @@ function renderBooks() {
   updateStats();
 }
 
-// Filter Tabs Event
+
 filterTabs.forEach(tab => {
   tab.addEventListener('click', () => {
     filterTabs.forEach(t => t.classList.remove('active'));
@@ -176,7 +176,7 @@ filterTabs.forEach(tab => {
   });
 });
 
-// Search Input
+
 searchInput?.addEventListener('input', (e) => {
   searchQuery = e.target.value.toLowerCase().trim();
   renderBooks();
@@ -189,7 +189,7 @@ function updateStats() {
   document.getElementById('statPages').textContent = books.reduce((acc, b) => acc + (Number(b.readPages) || 0), 0);
 }
 
-// Series
+
 function renderSeries() {
   const grid = document.getElementById('seriesGrid');
   if (!grid) return;
@@ -226,7 +226,7 @@ document.getElementById('addSeriesBtn')?.addEventListener('click', () => {
 });
 
 
-// Обработчик переключения пользовательского жанра
+
 genreSelect?.addEventListener('change', (e) => {
   if (e.target.value === 'custom') {
     customGenreInput?.classList.remove('hidden');
@@ -238,21 +238,21 @@ genreSelect?.addEventListener('change', (e) => {
 });
 
 
-// Modal Actions
+
 function openAddModal() {
   addBookForm.reset();
   
-  // Сбрасываем и скрываем инпут своего жанра
+  
   if (customGenreInput) {
     customGenreInput.classList.add('hidden');
     customGenreInput.value = '';
   }
 
-  // Сбрасываем скрытый ID
+  
   const bookIdInput = document.getElementById('bookId');
   if (bookIdInput) bookIdInput.value = '';
 
-  // Устанавливаем формат по умолчанию (eBook)
+  
   const defaultFormat = document.querySelector('input[name="format"][value="eBook"]');
   if (defaultFormat) defaultFormat.checked = true;
 
@@ -307,17 +307,17 @@ addBookForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   let cover = null;
 
-  if (bookCoverFile?.files && bookCoverFile.files[0]) {
-    cover = await new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (evt) => resolve(evt.target.result);
-      reader.readAsDataURL(bookCoverFile.files[0]);
-    });
-  }
+  if (bookCoverInput?.files && bookCoverInput.files[0]) {
+  cover = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (evt) => resolve(evt.target.result);
+    reader.readAsDataURL(bookCoverInput.files[0]);
+  });
+}
 
   const selectedFormat = document.querySelector('input[name="format"]:checked')?.value || 'eBook';
 
-  // Определяем итоговый жанр
+ 
   let selectedGenre = genreSelect?.value || 'Fiction';
   if (selectedGenre === 'custom') {
     selectedGenre = customGenreInput?.value.trim() || 'Other';
@@ -347,6 +347,158 @@ addBookForm?.addEventListener('submit', async (e) => {
   bookModal.classList.add('hidden');
 });
 
-// Init
+
 initProfile();
 renderBooks();
+
+
+const sortDropdown = document.getElementById('sortDropdown');
+
+if (sortDropdown) {
+  const trigger = sortDropdown.querySelector('.dropdown-trigger');
+  const menu = sortDropdown.querySelector('.dropdown-menu');
+  const label = sortDropdown.querySelector('.dropdown-label');
+  const options = sortDropdown.querySelectorAll('.dropdown-option');
+
+  
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sortDropdown.classList.toggle('open');
+    menu.classList.toggle('hidden');
+  });
+
+  
+  options.forEach((option) => {
+    option.addEventListener('click', () => {
+      options.forEach((o) => o.classList.remove('selected'));
+      option.classList.add('selected');
+      label.textContent = option.textContent;
+
+      menu.classList.add('hidden');
+      sortDropdown.classList.remove('open');
+
+      
+      if (typeof renderBooks === 'function') {
+        renderBooks();
+      }
+    });
+  });
+
+  
+  document.addEventListener('click', () => {
+    menu.classList.add('hidden');
+    sortDropdown.classList.remove('open');
+  });
+}
+
+
+
+function setupCustomDropdown(dropdownId, onChangeCallback) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  const trigger = dropdown.querySelector('.dropdown-trigger');
+  const menu = dropdown.querySelector('.dropdown-menu');
+  const label = dropdown.querySelector('.dropdown-label');
+  const options = dropdown.querySelectorAll('.dropdown-option');
+  const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    
+    document.querySelectorAll('.custom-dropdown').forEach(d => {
+      if (d !== dropdown) {
+        d.classList.remove('open');
+        d.querySelector('.dropdown-menu')?.classList.add('hidden');
+      }
+    });
+    dropdown.classList.toggle('open');
+    menu.classList.toggle('hidden');
+  });
+
+  options.forEach((option) => {
+    option.addEventListener('click', () => {
+      options.forEach((o) => o.classList.remove('selected'));
+      option.classList.add('selected');
+      label.textContent = option.textContent;
+
+      const val = option.dataset.value;
+      if (hiddenInput) hiddenInput.value = val;
+
+      menu.classList.add('hidden');
+      dropdown.classList.remove('open');
+
+      if (onChangeCallback) onChangeCallback(val);
+    });
+  });
+}
+
+
+setupCustomDropdown('statusDropdown');
+setupCustomDropdown('genreDropdown', (val) => {
+  if (val === 'custom') {
+    customGenreInput?.classList.remove('hidden');
+    customGenreInput?.focus();
+  } else {
+    customGenreInput?.classList.add('hidden');
+    if (customGenreInput) customGenreInput.value = '';
+  }
+});
+
+
+
+let currentSelectedBook = null;
+
+function openBookDetail(book) {
+  currentSelectedBook = book;
+  
+  document.getElementById('detailTitle').textContent = book.title || '';
+  document.getElementById('detailAuthor').textContent = book.author || '';
+  document.getElementById('detailCover').src = book.cover || 'placeholder.png';
+  document.getElementById('detailStatusBadge').textContent = book.status || 'Want to read';
+  document.getElementById('detailPagesRead').textContent = book.pagesRead || 0;
+  document.getElementById('detailTotalPages').textContent = book.totalPages || 0;
+  document.getElementById('detailStartDate').textContent = book.startDate || '—';
+  document.getElementById('detailFormat').textContent = book.format || '📱 eBook';
+  document.getElementById('detailDescription').textContent = book.description || 'No description available.';
+
+  const total = parseInt(book.totalPages) || 1;
+  const read = parseInt(book.pagesRead) || 0;
+  const percent = Math.min(Math.round((read / total) * 100), 100);
+  
+  document.getElementById('detailProgressBar').style.width = `${percent}%`;
+  document.getElementById('detailProgressPercent').textContent = `${percent}%`;
+
+  document.getElementById('bookDetailModal').classList.remove('hidden');
+}
+
+
+document.getElementById('closeDetailBtn')?.addEventListener('click', () => {
+  document.getElementById('bookDetailModal').classList.add('hidden');
+});
+
+document.getElementById('openBookSettingsBtn')?.addEventListener('click', () => {
+  document.getElementById('bookSettingsSheet').classList.remove('hidden');
+});
+
+document.getElementById('closeSettingsSheetBtn')?.addEventListener('click', () => {
+  document.getElementById('bookSettingsSheet').classList.add('hidden');
+});
+
+
+document.getElementById('editBookBtn')?.addEventListener('click', () => {
+  document.getElementById('bookSettingsSheet').classList.add('hidden');
+  document.getElementById('bookDetailModal').classList.add('hidden');
+  
+  if (currentSelectedBook) {
+    document.getElementById('bookTitle').value = currentSelectedBook.title || '';
+    document.getElementById('bookAuthor').value = currentSelectedBook.author || '';
+    document.getElementById('bookDescription').value = currentSelectedBook.description || '';
+    if (document.getElementById('totalPages')) {
+      document.getElementById('totalPages').value = currentSelectedBook.totalPages || '';
+    }
+    
+    document.getElementById('bookModal').classList.remove('hidden');
+  }
+});
+
